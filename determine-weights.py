@@ -14,7 +14,7 @@
 
 import os
 import sys
-
+import math
 
 ### Globals ###
 NUM_METHODS = 4
@@ -94,6 +94,42 @@ def print_graph(g):
             print(f'    {n}: [{g[v][n][0]}, {g[v][n][1]}, {g[v][n][2]}, {g[v][n][3]}]')
 
 
+##
+# @desc    determines low and high values of weights
+# --
+# @param   g  graph
+# @param   m  method (enum)
+# @return  NA
+##
+def print_range(g):
+
+    # Define Ranges
+    full_img = [math.inf, 0]
+    rel_txt  = [math.inf, 0]
+    sub_img  = [math.inf, 0]
+    ocr      = [math.inf, 0]
+
+    # Computer 
+    for v in g:
+        for n in g[v]:
+            full_img[0] = min(g[v][n][FULL_IMG], full_img[0])
+            rel_txt[0]  = min(g[v][n][REL_TXT], rel_txt[0])
+            sub_img[0]  = min(g[v][n][SUB_IMG], sub_img[0])
+            ocr[0]      = min(g[v][n][OCR], ocr[0])
+            full_img[1] = max(g[v][n][FULL_IMG], full_img[1])
+            rel_txt[1]  = max(g[v][n][REL_TXT], rel_txt[1])
+            sub_img[1]  = max(g[v][n][SUB_IMG], sub_img[1])
+            ocr[1]      = max(g[v][n][OCR], ocr[1])
+
+    # Print
+    print('Ranges by Method')
+    print(f'  Full Image Query: {full_img}')
+    print(f'  Related Text: {rel_txt}')
+    print(f'  Subimage: {sub_img}')
+    print(f'  OCR: {ocr}')
+
+    return
+
 ### Main Execution ###
 
 if __name__ == '__main__':
@@ -102,4 +138,8 @@ if __name__ == '__main__':
     g = convert_txt('./data/graph-first-hundred.txt')
 
     # Print Graph
-    print_graph(g)
+    #print_graph(g)
+
+    # Print Lows and Highs of Methods
+    print_range(g)
+
