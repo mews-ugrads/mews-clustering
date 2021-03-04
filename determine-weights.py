@@ -28,7 +28,7 @@ from MewsGraph import MewsGraph
 ##
 def usage(exit_code=0):
 	print('''Usage: {} IN_FILE
-		- IN_FILE   input file (.pov)'''.format(os.path.basename(sys.argv[0])))
+		- IN_FILE   input file (.txt)'''.format(os.path.basename(sys.argv[0])))
 	sys.exit(exit_code)
 
 
