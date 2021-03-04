@@ -27,6 +27,18 @@ OCR         = 3
 ### Functions ###
 
 ##
+# @desc    prints usage message
+# --
+# @param   exit_code  0 or 1
+# @return  g          NA
+##
+def usage(exit_code=0):
+	print('''Usage: {} IN_FILE
+		- IN_FILE   input file (.pov)'''.format(os.path.basename(sys.argv[0])))
+	sys.exit(exit_code)
+
+
+##
 # @desc    converts txt file to graph
 # --
 # @param   fpath  file path for txt file
@@ -130,12 +142,19 @@ def print_range(g):
 
     return
 
+
 ### Main Execution ###
 
 if __name__ == '__main__':
 
+    # Parse Command Line
+    if len(sys.argv) != 2: usage(1)
+
+    # Grab Input File
+    fpath = sys.argv[1]
+
     # Convert to graph
-    g = convert_txt('./data/graph-first-hundred.txt')
+    g = convert_txt(fpath)
 
     # Print Graph
     #print_graph(g)
