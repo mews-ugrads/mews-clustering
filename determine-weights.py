@@ -12,6 +12,7 @@
 
 ### Imports ###
 
+import os
 import sys
 import math
 from MewsGraph import MewsGraph
