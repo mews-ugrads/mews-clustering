@@ -47,7 +47,12 @@ def usage(exit_code=0):
 def convert_txt(fpath):
     graph = {}
     
-    f = open(fpath, 'r')
+    # Open File
+    try:
+        f = open(fpath, 'r')
+    except:
+        print(f'Cannot open "{fpath}"')
+        sys.exit(1)
 
     # Ignore First Line
     next(f)
