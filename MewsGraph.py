@@ -73,6 +73,27 @@ class MewsGraph:
         f.close()
         return g
 
+    def dump_txt(g, fpath):
+
+        # Open File
+        try:
+            f = open(fpath, 'w')
+        except:
+            print(f'Cannot write to "{fpath}"')
+            sys.exit(1)
+        
+        # Write First Line
+        f.write('node1; node2; key; weight; label; text1; text2\n')
+
+        # Write All Other Lines
+        methods = ['full_image_query', 'related_text', 'subimage', 'ocr']
+        for v in g:
+            for n in g[v]:
+                for method_i in range(MewsGraph.NUM_METHODS):
+                    f.write(f'{v};{n};{methods[method_i]};{g[v][n][method_i]};;;;\n')
+
+        f.close()
+        return
 
     ##
     # @desc    prints graph
