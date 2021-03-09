@@ -8,3 +8,4 @@ Dedicated to determining success of clustering algorithms with the given input b
 - `MewsGraph.py`: contains abstract class `MewsGraph` to help with loading and outputting graphs in the our desired format
 - `determine-weights.py`: file to determine range of weights per method
 - `grab-most-related.py`: reduces input graph based on weight thresholds and outputs reduced graph
+- `sort-weights.py`: sorts weights by method
