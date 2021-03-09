@@ -7,7 +7,13 @@
 #        ... dict with key as neighbor img name. val is list (length 4) ...
 #        ... of weights corresponding to methods.
 ##
+
+### Imports
+
 import sys
+
+
+### MewsGraph
 
 class MewsGraph:
 
@@ -18,16 +24,18 @@ class MewsGraph:
     SUB_IMG     = 2
     OCR         = 3
 
+    def __init__(self):
+        self.g = {}
+
     ##
     # @desc    converts txt file to graph
     # --
     # @param   fpath  file path for txt file; path has format "u;v;method;weight;x;x;x;"
     # @return  g      graph in format of {v1: { e1: [w1, w2, w3, w4], e2: [...] }, v2: ...}
     ##
-    @staticmethod
-    def load_txt(fpath):
+    def load_txt(self, fpath):
         # Initialize Graph
-        g = {}
+        self.g = {}
 
         # Open File
         try:
@@ -51,27 +59,35 @@ class MewsGraph:
             weight = float(items[3])
 
             # Insert Vertices
-            if source not in g: g[source] = {}
-            if target not in g: g[target] = {}
-            if source not in g[target]: g[target][source] = MewsGraph.NUM_METHODS * [0]
-            if target not in g[source]: g[source][target] = MewsGraph.NUM_METHODS * [0]
+            if source not in self.g: self.g[source] = {}
+            if target not in self.g: self.g[target] = {}
+            if source not in self.g[target]: self.g[target][source] = MewsGraph.NUM_METHODS * [0]
+            if target not in self.g[source]: self.g[source][target] = MewsGraph.NUM_METHODS * [0]
 
             # Add Weights
             if method == "full_image_query":
-                g[source][target][MewsGraph.FULL_IMG] += weight
-                g[target][source][MewsGraph.FULL_IMG] += weight
+                self.g[source][target][MewsGraph.FULL_IMG] += weight
+                self.g[target][source][MewsGraph.FULL_IMG] += weight
             if method == "related_text":
-                g[source][target][MewsGraph.REL_TXT] += weight
-                g[target][source][MewsGraph.REL_TXT] += weight
+                self.g[source][target][MewsGraph.REL_TXT] += weight
+                self.g[target][source][MewsGraph.REL_TXT] += weight
             if method == "subimage":
-                g[source][target][MewsGraph.SUB_IMG] += weight
-                g[target][source][MewsGraph.SUB_IMG] += weight
+                self.g[source][target][MewsGraph.SUB_IMG] += weight
+                self.g[target][source][MewsGraph.SUB_IMG] += weight
             if method == "ocr":
-                g[source][target][MewsGraph.OCR] += weight
-                g[target][source][MewsGraph.OCR] += weight
+                self.g[source][target][MewsGraph.OCR] += weight
+                self.g[target][source][MewsGraph.OCR] += weight
 
         f.close()
-        return g
+
+    def nodes(self):
+        return self.g.keys()
+
+    def neighbors(self, u):
+        return self.g[u].keys()
+
+    def weights(self, u, v):
+        return self.g[u][v]
 
     def dump_txt(g, fpath):
 
@@ -101,16 +117,15 @@ class MewsGraph:
     # @param   g  graph
     # @return  NA
     ##
-    @staticmethod
-    def print(g):
+    def print(self):
 
         # Every Vertex
-        for v in g:
+        for v in self.nodes():
             print(f'{v}:')
 
             # Every Neighbor
-            for n in g[v]:
+            for n in self.neighbors(v):
 
                 # Every Edge Between Them
-                print(f'    {n}: [{g[v][n][0]}, {g[v][n][1]}, {g[v][n][2]}, {g[v][n][3]}]')
+                print(f'    {n}: [{self.weights(v,n)[MewsGraph.FULL_IMG]}, {self.weights(v,n)[MewsGraph.REL_TXT]}, {self.weights(v,n)[MewsGraph.SUB_IMG]}, {self.weights(v,n)[MewsGraph.OCR]}]')
 

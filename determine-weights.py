@@ -48,16 +48,16 @@ def print_range(g):
     ocr      = [math.inf, 0]
 
     # Computer 
-    for v in g:
-        for n in g[v]:
-            full_img[0] = min(g[v][n][MewsGraph.FULL_IMG], full_img[0])
-            full_img[1] = max(g[v][n][MewsGraph.FULL_IMG], full_img[1])
-            rel_txt[0]  = min(g[v][n][MewsGraph.REL_TXT], rel_txt[0])
-            rel_txt[1]  = max(g[v][n][MewsGraph.REL_TXT], rel_txt[1])
-            sub_img[0]  = min(g[v][n][MewsGraph.SUB_IMG], sub_img[0])
-            sub_img[1]  = max(g[v][n][MewsGraph.SUB_IMG], sub_img[1])
-            ocr[0]      = min(g[v][n][MewsGraph.OCR], ocr[0])
-            ocr[1]      = max(g[v][n][MewsGraph.OCR], ocr[1])
+    for v in g.nodes():
+        for n in g.neighbors(v):
+            full_img[0] = min(g.weights(v,n)[MewsGraph.FULL_IMG], full_img[0])
+            full_img[1] = max(g.weights(v,n)[MewsGraph.FULL_IMG], full_img[1])
+            rel_txt[0]  = min(g.weights(v,n)[MewsGraph.REL_TXT], rel_txt[0])
+            rel_txt[1]  = max(g.weights(v,n)[MewsGraph.REL_TXT], rel_txt[1])
+            sub_img[0]  = min(g.weights(v,n)[MewsGraph.SUB_IMG], sub_img[0])
+            sub_img[1]  = max(g.weights(v,n)[MewsGraph.SUB_IMG], sub_img[1])
+            ocr[0]      = min(g.weights(v,n)[MewsGraph.OCR], ocr[0])
+            ocr[1]      = max(g.weights(v,n)[MewsGraph.OCR], ocr[1])
 
     # Print
     print('Ranges by Method')
@@ -80,7 +80,8 @@ if __name__ == '__main__':
     fpath = sys.argv[1]
 
     # Convert to graph
-    g = MewsGraph.load_txt(fpath)
+    g = MewsGraph()
+    g.load_txt(fpath)
 
     # Print Lows and Highs of Methods
     print_range(g)
