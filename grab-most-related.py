@@ -117,10 +117,11 @@ if __name__ == '__main__':
     outpath = args.pop(0)
 
     # Convert to graph
-    g = MewsGraph.load_txt(inpath)
+    g = MewsGraph()
+    g.load_txt(inpath)
 
     # Minimize Based On Weights
-    min_g = reduce_by_weight(g, min_full_img, min_rel_txt, min_sub_img, min_ocr)
+    g.reduceBySoftWeights(min_full_img, min_rel_txt, min_sub_img, min_ocr)
 
     # Print Graph
-    MewsGraph.dump_txt(min_g, outpath)
+    g.dump_txt(outpath)

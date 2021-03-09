@@ -80,6 +80,20 @@ class MewsGraph:
 
         f.close()
 
+    def initEdge(self, u, v):
+        if u not in self.g: self.g[u] = {}
+        if v not in self.g: self.g[v] = {}
+        if u not in self.g[v]: self.g[v][u] = MewsGraph.NUM_METHODS * [0]
+        if v not in self.g[u]: self.g[u][v] = MewsGraph.NUM_METHODS * [0]
+
+    def removeEdge(self, u, v):
+        if u not in self.g: return
+        if v not in self.g: return
+        if u not in self.g[v]: return
+        if v not in self.g[u]: return
+        self.g[u].pop(v)
+        self.g[v].pop(u)
+
     def nodes(self):
         return self.g.keys()
 
@@ -89,7 +103,44 @@ class MewsGraph:
     def weights(self, u, v):
         return self.g[u][v]
 
-    def dump_txt(g, fpath):
+
+    ##
+    # @desc    removes edge if all thresholds aren't reached
+    # --
+    # @param   g
+    # @param   ful    threshold for full_image_query
+    # @param   rel    threshold for related_text
+    # @param   sub    threshold for subimage
+    # @param   ocr    threshold for ocr
+    # @return  min_g  minimized graph
+    ##
+    def reduceBySoftWeights(self, ful, rel, sub, ocr):
+        for source in list(self.nodes()):
+            for target in list(self.neighbors(source)):
+                # Remove Weights If Not In Threshold
+                weights = self.weights(source, target)
+                if weights[MewsGraph.FULL_IMG] < ful and weights[MewsGraph.REL_TXT] < rel and weights[MewsGraph.SUB_IMG] < sub and weights[MewsGraph.OCR] < ocr:
+                    self.removeEdge(source, target)
+
+    ##
+    # @desc    removes edge if ANY thresholds aren't reached
+    # --
+    # @param   g
+    # @param   ful    threshold for full_image_query
+    # @param   rel    threshold for related_text
+    # @param   sub    threshold for subimage
+    # @param   ocr    threshold for ocr
+    # @return  min_g  minimized graph
+    ##
+    def reduceByHardWeights(self, ful, rel, sub, ocr):
+        for source in list(self.nodes()):
+            for target in list(self.neighbors(source)):
+                # Remove Weights If Not In Threshold
+                weights = self.weights(source, target)
+                if weights[MewsGraph.FULL_IMG] < ful or weights[MewsGraph.REL_TXT] < rel or weights[MewsGraph.SUB_IMG] < sub or weights[MewsGraph.OCR] < ocr:
+                    self.removeEdge(source, target)
+
+    def dump_txt(self, fpath):
 
         # Open File
         try:
@@ -103,10 +154,10 @@ class MewsGraph:
 
         # Write All Other Lines
         methods = ['full_image_query', 'related_text', 'subimage', 'ocr']
-        for v in g:
-            for n in g[v]:
+        for v in self.nodes():
+            for n in self.neighbors(v):
                 for method_i in range(MewsGraph.NUM_METHODS):
-                    f.write(f'{v};{n};{methods[method_i]};{g[v][n][method_i]};;;;\n')
+                    f.write(f'{v};{n};{methods[method_i]};{self.weights(v,n)[method_i]};;;;\n')
 
         f.close()
         return
