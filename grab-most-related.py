@@ -32,59 +32,6 @@ def usage(exit_code=0):
 	sys.exit(exit_code)
 
 
-##
-# @desc    insert vertices if nonexistent
-# --
-# @param   g        graph
-# @param   source   node #1
-# @param   target   node #2
-# @return  NA
-##
-def init_vertices(g, source, target):
-    if source not in g: g[source] = {}
-    if target not in g: g[target] = {}
-    if source not in g[target]: g[target][source] = MewsGraph.NUM_METHODS * [0]
-    if target not in g[source]: g[source][target] = MewsGraph.NUM_METHODS * [0]
-    
-
-##
-# @desc    returns new graph with edges that exceed certain threshold
-# --
-# @param   g
-# @param   ful    threshold for full_image_query
-# @param   rel    threshold for related_text
-# @param   sub    threshold for subimage
-# @param   ocr    threshold for ocr
-# @return  min_g  minimized graph
-##
-def reduce_by_weight(g, ful, rel, sub, ocr):
-    min_g = {}
-
-    for source in g:
-        for target in g[source]:
-
-            # Add Weights If In Threshold
-            weights = g[source][target]
-            if weights[MewsGraph.FULL_IMG] >= ful:
-                init_vertices(min_g, source, target)
-                min_g[source][target][MewsGraph.FULL_IMG] = weights[MewsGraph.FULL_IMG]
-                min_g[target][source][MewsGraph.FULL_IMG] = weights[MewsGraph.FULL_IMG]
-            if weights[MewsGraph.REL_TXT] >= rel:
-                init_vertices(min_g, source, target)
-                min_g[source][target][MewsGraph.REL_TXT] = weights[MewsGraph.REL_TXT]
-                min_g[target][source][MewsGraph.REL_TXT] = weights[MewsGraph.REL_TXT]
-            if weights[MewsGraph.SUB_IMG] >= sub:
-                init_vertices(min_g, source, target)
-                min_g[source][target][MewsGraph.SUB_IMG] = weights[MewsGraph.SUB_IMG]
-                min_g[target][source][MewsGraph.SUB_IMG] = weights[MewsGraph.SUB_IMG]
-            if weights[MewsGraph.OCR] >= ocr:
-                init_vertices(min_g, source, target)
-                min_g[source][target][MewsGraph.OCR] = weights[MewsGraph.OCR]
-                min_g[target][source][MewsGraph.OCR] = weights[MewsGraph.OCR]
-
-    return min_g
-
-
 ### Main Execution ###
 
 if __name__ == '__main__':
